@@ -57,6 +57,7 @@ r_slider_options = {"value_range": [0, 255], "starting_value": random.randint(0,
 g_slider_options = {"value_range": [0, 255], "starting_value": random.randint(0, 255)}
 b_slider_options = {"value_range": [0, 255], "starting_value": random.randint(0, 255)}
 
+
 themecols = [(255, 255, 255), (0, 0, 0)]
 if settings.getsettings()["darkmode"] == 1:
     themecols[0] = (11, 11, 11)
@@ -80,6 +81,18 @@ hapi.fill(targetcolor)
 hapi.rect((window_width-250)/2, 20, 250, 250)
 colornametext = COLOR_NAME_FONT.render(targetcolorname, 1, (255, 255, 255))
 hapi.screen.blit(render_outline(targetcolorname, COLOR_NAME_FONT, hapi.color["white"], hapi.color["black"], opx=4), ((window_width-colornametext.get_width())/2, (250-colornametext.get_height())/2+20))
+
+def handle_events(event):
+    if event.type == pygame.QUIT:
+        hapi.is_running = False
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_RETURN:
+            #percentage error formula used
+            print(f"R: {round(int(str(round(r_slider.value())-targetcolor[0]).replace('-', ''))/targetcolor[0]*100)}%")
+            print(f"G: {round(int(str(round(g_slider.value())-targetcolor[1]).replace('-', ''))/targetcolor[1]*100)}%")
+            print(f"B: {round(int(str(round(b_slider.value())-targetcolor[2]).replace('-', ''))/targetcolor[2]*100)}%")
+
+hapi.handle_events = handle_events
 
 while hapi.is_running:
     r_slider.update()
