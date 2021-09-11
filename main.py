@@ -2,49 +2,45 @@ from hooman import Hooman
 import pygame
 import pygame.freetype
 import random
-import settings
+# modules from files
+import sys
+sys.path.append("./modules/")
+
 import colors
 import hextorgb
-import pygame
 import outline
 
 window_width, window_height = 640, 480
 hapi = Hooman(window_width, window_height)
-COLOR_NAME_FONT = pygame.font.Font("inkythinpixels.ttf", 24)
-SLIDER_FONT = pygame.font.Font("inkythinpixels.ttf", 18)
-MENUS_FONT = pygame.font.Font("inkythinpixels.ttf", 28)
+COLOR_NAME_FONT = pygame.font.Font("assets/fonts/inkythinpixels.ttf", 24)
+SLIDER_FONT = pygame.font.Font("assets/fonts/inkythinpixels.ttf", 18)
+MENUS_FONT = pygame.font.Font("assets/fonts/inkythinpixels.ttf", 28)
 
-logo = pygame.image.load("logo.png")
+logo = pygame.image.load("assets/images/logo.png")
 
 r_slider_options = {"value_range": [0, 255], "starting_value": random.randint(0, 255)}
 g_slider_options = {"value_range": [0, 255], "starting_value": random.randint(0, 255)}
 b_slider_options = {"value_range": [0, 255], "starting_value": random.randint(0, 255)}
 
-#0 - main menu
-#1 - settings
-#2 - game
-#3 - exit
-#4 - results
+# 0 - main menu
+# 1 - settings
+# 2 - game
+# 3 - exit
+# 4 - results
 gamestate = 0
 
-#[0] is main menu
-#[1] is game
-#[2] is settings
-#[3] is results
+# [0] is main menu
+# [1] is game
+# [2] is settings
+# [3] is results
 initstates = [0, 0, 0, 0]
 
-#score for results screen
+# score for results screen
 score = ["", "", ""]
 
+# [0] is bg
+# [1] is fg
 themecols = [(255, 255, 255), (0, 0, 0)]
-if settings.getsettings()["darkmode"] == 1:
-    themecols[0] = (11, 11, 11)
-    themecols[1] = (255, 255, 255)
-    print("dark mode")
-elif settings.getsettings()["darkmode"] == 0:
-    print("white mode")
-else:
-    print("incorrect darkmode setting")
 
 hapi.background(themecols[0])
 
@@ -72,8 +68,10 @@ while gamestate != 3:
                             gamestate = 2
                     if settingsbtnrect.collidepoint(mouse_pos):
                             print('Settings button was pressed at {0}'.format(mouse_pos))
+                            gamestate = 1
                     if exitbtnrect.collidepoint(mouse_pos):
                             print('Exit button was pressed at {0}'.format(mouse_pos))
+                            gamestate = 3
                 if event.type == pygame.QUIT:
                     print("exiting")
                     quit()
@@ -94,13 +92,32 @@ while gamestate != 3:
             hapi.flip_display()
             hapi.event_loop()
     elif gamestate == 1:
-        print(gamestate)
+        if initstates[2] == 0:
+            hapi.fill(themecols[0])
+            hapi.rect(0, 0, window_width, window_height)
+
+            nothinghere = MENUS_FONT.render("Nothing here... yet...", 1, themecols[1])
+            def handle_events_stt(event):
+                if event.type == pygame.QUIT:
+                    print("exiting")
+                    quit()
+            hapi.handle_events = handle_events_stt
+        
+        while hapi.is_running:
+            if gamestate != 1:
+                break
+            hapi.screen.blit(nothinghere, ((window_width-nothinghere.get_width())/2, 30))
+
+            hapi.flip_display()
+            hapi.event_loop()
+
     elif gamestate == 2:
         print(gamestate)
         if initstates[1] == 0:
             hapi.fill(themecols[0])
             hapi.rect(0, 0, window_width, window_height)
-
+            
+            logo.fill((0, 0, 0, 0))
             r_slider = hapi.slider((window_width-400)/2, 320, 400, 10, r_slider_options)
             g_slider = hapi.slider((window_width-400)/2, 360, 400, 10, g_slider_options)
             b_slider = hapi.slider((window_width-400)/2, 400, 400, 10, b_slider_options)
@@ -111,7 +128,7 @@ while gamestate != 3:
                     quit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        #percentage error formula used
+                        # percentage error formula used
                         print(f"R: {round(int(str(round(r_slider.value())-targetcolor[0]).replace('-', ''))/targetcolor[0]*100)}%")
                         print(f"G: {round(int(str(round(g_slider.value())-targetcolor[1]).replace('-', ''))/targetcolor[1]*100)}%")
                         print(f"B: {round(int(str(round(b_slider.value())-targetcolor[2]).replace('-', ''))/targetcolor[2]*100)}%")
