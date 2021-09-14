@@ -1,4 +1,5 @@
 from hooman import Hooman
+import os
 import pygame
 import pygame.freetype
 import random
@@ -11,7 +12,7 @@ import colorconv
 import outline
 
 window_width, window_height = 640, 480
-hapi = Hooman(window_width, window_height)
+hapi = Hooman(window_width, window_height, "assets/fonts/inkythinpixels.ttf")
 COLOR_NAME_FONT = pygame.font.Font("assets/fonts/inkythinpixels.ttf", 24)
 SLIDER_FONT = pygame.font.Font("assets/fonts/inkythinpixels.ttf", 18)
 MENUS_FONT = pygame.font.Font("assets/fonts/inkythinpixels.ttf", 28)
@@ -50,19 +51,19 @@ while gamestate != 5:
 
             playbtn = MENUS_FONT.render("Play", 0, themecols[1])
             settingsbtn = MENUS_FONT.render("Settings", 0, themecols[1])
-            helpbtn = MENUS_FONT.render("Help", 0, themecols[1])
+            aboutbtn = MENUS_FONT.render("About", 0, themecols[1])
             exitbtn = MENUS_FONT.render("Exit", 0, themecols[1])
 
             playbtnrect = playbtn.get_rect()
             settingsbtnrect = settingsbtn.get_rect()
-            helpbtnrect = helpbtn.get_rect()
+            aboutbtnrect = aboutbtn.get_rect()
             exitbtnrect = exitbtn.get_rect()
 
             logo = pygame.image.load("assets/images/logo.png")
 
             playbtnrect.update(((window_width-playbtn.get_width())/2-settingsbtn.get_width()-exitbtn.get_width(), 300), (playbtn.get_width(), playbtn.get_height()))
             settingsbtnrect.update(((window_width-settingsbtn.get_width())/2-exitbtn.get_width(), 300), (settingsbtn.get_width(), settingsbtn.get_height()))
-            helpbtnrect.update(((window_width-settingsbtn.get_width())/2+settingsbtn.get_width()-(exitbtn.get_width()/2), 300), (helpbtn.get_width(), helpbtn.get_height()))
+            aboutbtnrect.update(((window_width-settingsbtn.get_width())/2+settingsbtn.get_width()-(aboutbtn.get_width()/2), 300), (aboutbtn.get_width(), aboutbtn.get_height()))
             exitbtnrect.update(((window_width-settingsbtn.get_width())/2+settingsbtn.get_width()+exitbtn.get_width(), 300), (exitbtn.get_width(), exitbtn.get_height()))
             def handle_events_mm(event):
                 global gamestate
@@ -80,8 +81,8 @@ while gamestate != 5:
                             print('Exit button was pressed at {0}'.format(mouse_pos))
                             initstates[0] = 0
                             gamestate = 5
-                    if helpbtnrect.collidepoint(mouse_pos):
-                            print('Help button was pressed at {0}'.format(mouse_pos))
+                    if aboutbtnrect.collidepoint(mouse_pos):
+                            print('About button was pressed at {0}'.format(mouse_pos))
                             initstates[0] = 0
                             gamestate = 4
                 if event.type == pygame.K_ESCAPE:
@@ -103,7 +104,7 @@ while gamestate != 5:
 
             hapi.screen.blit(playbtn, playbtnrect)
             hapi.screen.blit(settingsbtn, settingsbtnrect)
-            hapi.screen.blit(helpbtn, helpbtnrect)
+            hapi.screen.blit(aboutbtn, aboutbtnrect)
             hapi.screen.blit(exitbtn, exitbtnrect)
 
             hapi.flip_display()
@@ -273,7 +274,15 @@ while gamestate != 5:
             hapi.fill(themecols[0])
             hapi.rect(0, 0, window_width, window_height)
             
-            nothinghere = MENUS_FONT.render("Nothing here... yet...", 1, themecols[1])
+            #nothinghere = MENUS_FONT.render("Nothing here... yet...", 1, themecols[1])
+            abouttoptext = MENUS_FONT.render("About this game", 1, themecols[1])
+            aboutmadebytext = MENUS_FONT.render("It's made by redoverflow,", 1, themecols[1])
+            aboutmadeusingtext = MENUS_FONT.render("in pygame with the help of Hooman (a pygame wrapper),", 1, themecols[1])
+            aboutmadeintext = MENUS_FONT.render("and was made in 2-3 days.", 1, themecols[1])
+
+            abouthowtoplay1 = MENUS_FONT.render("In this game you have to choose", 1, themecols[1])
+            abouthowtoplay2 = MENUS_FONT.render("the closest match to a color given to you", 1, themecols[1])
+            abouthowtoplay3 = MENUS_FONT.render("using the sliders for R, G and B.", 1, themecols[1])
 
             def handle_events_hlp(event):
                 global gamestate
@@ -292,7 +301,15 @@ while gamestate != 5:
         while hapi.is_running:
             if gamestate != 4:
                 break
-            hapi.screen.blit(nothinghere, ((window_width-nothinghere.get_width())/2, 30))
+            #hapi.screen.blit(nothinghere, ((window_width-nothinghere.get_width())/2, 30))
+            hapi.screen.blit(abouttoptext, ((window_width-abouttoptext.get_width())/2, 20))
+            hapi.screen.blit(aboutmadebytext, ((window_width-aboutmadebytext.get_width())/2, 80))
+            hapi.screen.blit(aboutmadeusingtext, ((window_width-aboutmadeusingtext.get_width())/2, 120))
+            hapi.screen.blit(aboutmadeintext, ((window_width-aboutmadeintext.get_width())/2, 160))
+
+            hapi.screen.blit(abouthowtoplay1, ((window_width-abouthowtoplay1.get_width())/2, 260))
+            hapi.screen.blit(abouthowtoplay2, ((window_width-abouthowtoplay2.get_width())/2, 300))
+            hapi.screen.blit(abouthowtoplay3, ((window_width-abouthowtoplay3.get_width())/2, 340))
 
             hapi.flip_display()
             hapi.event_loop()
